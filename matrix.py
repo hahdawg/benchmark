@@ -59,14 +59,19 @@ def is_one(x):
     return isclose(x, 1.0)
 
 
+def first_nonzero(X, i):
+    """Find first nonzero element of X[i:][i]"""
+    j = i
+    while is_zero(X[j][j]):
+        j += 1
+    return j
+
+
 def inv(X):
     N, _ = shape(X)
     A = concat(X[:], eye(N))
     for j in xrange(N):
-        k = j
-        while is_zero(A[k][k]):
-            k += 1
-
+        k = first_nonzero(A, j)
         if k == N:
             raise ValueError("X is not invertible")
         else:
@@ -75,6 +80,7 @@ def inv(X):
         A = scalar_mult(A, j, 1/(A[j][j]))
         for i in range_except(N, j):
             A = add(A, j, i, -A[i][j])
+
     return [ai[N:] for ai in A]
 
 
