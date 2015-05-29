@@ -130,6 +130,7 @@ def tests():
     assert is_one(1)
     assert is_eye([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
     assert not is_eye(Y)
+    assert is_eye(inv(eye(5)))
     assert is_eye(multiply(X, inv(X)))
     assert is_eye(multiply(Y, inv(Y)))
     assert is_eye(multiply(Z, inv(Z)))
