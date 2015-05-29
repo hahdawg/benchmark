@@ -7,13 +7,13 @@ def shape(X):
 
 
 def zeros(N):
-    return [[0 for _ in xrange(N)] for _ in xrange(N)]
+    return [[0.0 for _ in xrange(N)] for _ in xrange(N)]
 
 
 def eye(N):
     res = zeros(N)
     for i in xrange(N):
-        res[i][i] = 1
+        res[i][i] = 1.0
     return res
 
 
@@ -36,7 +36,7 @@ def scalar_mult(X, i, c):
     return X
 
 
-def add(X, i, j, c=1):
+def add(X, i, j, c=1.0):
     """Adds a multiple c of row i to row j"""
     X = X[:]
     X[j] = [c*xik + xjk for xik, xjk in zip(X[i], X[j])]
