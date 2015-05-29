@@ -18,32 +18,33 @@ def eye(N):
 
 
 def concat(X, Y):
+    """Concat X and Y by column"""
     return [xi + yi for xi, yi in zip(X, Y)]
 
 
 def swap(X, i, j):
+    """Swap rows i and j in X"""
     X = X[:]
     X[i], X[j] = X[j], X[i]
     return X
 
 
 def scalar_mult(X, i, c):
+    """Multiplies row i of X by c"""
     X = X[:]
     X[i] = [c*x for x in X[i]]
     return X
 
 
 def add(X, i, j, c=1):
-    """Adds a multiple of row i to row j"""
+    """Adds a multiple c of row i to row j"""
     X = X[:]
     X[j] = [c*xik + xjk for xik, xjk in zip(X[i], X[j])]
     return X
 
 
-def excl_range(n, i):
-    xs = range(n)
-    xs.remove(i)
-    return xs
+def range_except(n, i):
+    return [j for j in xrange(n) if j != i]
 
 
 def isclose(x, y, tol=1e-6):
@@ -60,7 +61,7 @@ def is_one(x):
 
 def inv(X):
     N, _ = shape(X)
-    A = concat(X, eye(N))
+    A = concat(X[:], eye(N))
     for j in xrange(N):
         k = j
         while is_zero(A[k][k]):
@@ -72,7 +73,7 @@ def inv(X):
             A = swap(A, j, k)
 
         A = scalar_mult(A, j, 1/(A[j][j]))
-        for i in excl_range(N, j):
+        for i in range_except(N, j):
             A = add(A, j, i, -A[i][j])
     return [ai[N:] for ai in A]
 
@@ -82,6 +83,7 @@ def transpose(X):
 
 
 def dot(xi, yi):
+    """dot product"""
     return sum(xij*yij for xij, yij in zip(xi, yi))
 
 
@@ -95,16 +97,10 @@ def print_matrix(X):
 
 
 def is_eye(X):
-    N = len(X)
-    for i in xrange(N):
-        for j in xrange(N):
-            if i == j:
-                if not is_one(X[i][j]):
-                    return False
-            else:
-                if not is_zero(X[i][j]):
-                    return False
-    return True
+    N, _ = shape(X)
+    diag = all(is_one(X[i][i]) for i in xrange(N))
+    off_diag = all(is_zero(X[i][j]) for i in xrange(N) for j in xrange(N) if i != j)
+    return diag and off_diag
 
 
 def tests():
@@ -128,18 +124,14 @@ def tests():
     assert is_one(1)
     assert is_eye([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
     assert not is_eye(Y)
-    invX = inv(X)
-    invY = inv(Y)
-    invZ = inv(Z)
-    assert is_eye(multiply(X, invX))
-    assert is_eye(multiply(Y, invY))
-    assert is_eye(multiply(Z, invZ))
+    assert is_eye(multiply(X, inv(X)))
+    assert is_eye(multiply(Y, inv(Y)))
+    assert is_eye(multiply(Z, inv(Z)))
 
     random.seed(0)
     N = 100
     W = [[random.randint(0, 100) for _ in xrange(N)] for _ in xrange(N)]
     assert is_eye(multiply(W, inv(W)))
-    
 
     print "tests passed"
 
