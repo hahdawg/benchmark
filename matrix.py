@@ -57,7 +57,7 @@ def is_one(x):
 
 
 def first_nonzero(X, i):
-    """Find first nonzero element of X[i:][i]"""
+    """Find index of first nonzero element of X[i:][i]"""
     j = i
     while is_zero(X[j][j]):
         j += 1
