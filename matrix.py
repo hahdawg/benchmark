@@ -11,10 +11,7 @@ def zeros(N):
 
 
 def eye(N):
-    res = zeros(N)
-    for i in xrange(N):
-        res[i][i] = 1.0
-    return res
+    return [[0.0 if i != j else 1.0 for i in xrange(N)] for j in xrange(N)]
 
 
 def concat(X, Y):
